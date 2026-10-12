@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Feliz cumpleaños</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Caveat:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Paleta pastel */
+    --lila:#CDB8EC;
+    --rosa:#F6C5D3;
+    --rosa-suave:#F8D9E2;
+    --cielo:#C4DDF3;
+    --durazno:#FFE3D2;
+    --papel:#FFFAF6;
+    --mauve:#6B3F6E;
+    --tinta:#4A3548;
+
+    /* Tamaño de UNA página. Todo lo demás se escala a partir de esto. */
+    --w: min(44vw, 430px, calc((100svh - 150px) / 1.42));
+    --h: calc(var(--w) * 1.42);
+    --u: calc(var(--w) / 100);
+
+    --dur: 1.15s;
+    --ease: cubic-bezier(.645,.045,.355,1);
+    --sl: 0; --sw: 1; --k: 0;
+  }
+  @media (max-width: 760px){
+    :root{ --w: min(86vw, 420px, calc((100svh - 190px) / 1.42)); }
+  }
+
+  *{ box-sizing:border-box; margin:0; }
+  html,body{ height:100%; }
+  body{
+    height:100svh;
+    overflow:hidden;
+    display:grid;
+    grid-template-rows:1fr auto;
+    justify-items:center;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+    font-family:'Newsreader', Georgia, serif;
+    color:var(--tinta);
+    background:radial-gradient(120% 90% at 50% 38%, var(--durazno) 0%, #F7DDEB 52%, #D5E3F6 100%);
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .stage{
+    width:100%;
+    display:grid;
+    place-items:center;
+    perspective:2600px;
+    touch-action:pan-y;
+    animation:aparece 1.2s ease both;
+  }
+  @keyframes aparece{ from{ opacity:0; } to{ opacity:1; } }
+
+  /* ---------- LIBRO ---------- */
+  .book{
+    position:relative;
+    width:var(--w);
+    height:var(--h);
+    transform-style:preserve-3d;
+    transform:translateX(calc(var(--w) * var(--k)));
+    transition:transform var(--dur) var(--ease);
+    cursor:pointer;
+  }
+  .shadow{
+    position:absolute;
+    left:calc(var(--w) * var(--sl));
+    width:calc(var(--w) * var(--sw));
+    bottom:calc(var(--h) * -0.04);
+    height:calc(var(--h) * .07);
+    background:radial-gradient(closest-side, rgba(107,63,110,.32), transparent);
+    filter:blur(6px);
+    transform:translateZ(-8px);
+    transition:left var(--dur) var(--ease), width var(--dur) var(--ease);
+    pointer-events:none;
+  }
+
+  .leaf{
+    position:absolute;
+    inset:0;
+    transform-origin:left center;
+    transform-style:preserve-3d;
+    transform:translateZ(calc(var(--i) * -1px)) rotateY(0deg);
+    transition:transform var(--dur) var(--ease);
+    will-change:transform;
+  }
+  .leaf.flipped{
+    transform:translateZ(calc(var(--i) * 1px)) rotateY(-180deg);
+  }
+
+  .face{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+    backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
+  }
+  .face.recto{
+    border-radius:3px 12px 12px 3px;
+    background:
+      linear-gradient(90deg, rgba(107,63,110,.14), rgba(107,63,110,0) 7%),
+      var(--papel);
+    box-shadow:inset 0 0 0 1px rgba(107,63,110,.08);
+  }
+  .face.verso{
+    transform:rotateY(180deg);
+    border-radius:12px 3px 3px 12px;
+    background:
+      linear-gradient(270deg, rgba(107,63,110,.14), rgba(107,63,110,0) 7%),
+      var(--papel);
+    box-shadow:inset 0 0 0 1px rgba(107,63,110,.08);
+  }
+
+  /* ---------- PORTADA Y CONTRAPORTADA ---------- */
+  .face.cover{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:calc(var(--u) * 4.5);
+    text-align:center;
+    color:var(--mauve);
+  }
+  .face.recto.cover{
+    background:
+      linear-gradient(90deg, rgba(90,49,89,.28) 0, rgba(255,255,255,.35) 2.2%, rgba(90,49,89,.14) 3.2%, rgba(90,49,89,0) 9%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,.12) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(90deg, rgba(107,63,110,.05) 0 1px, transparent 1px 3px),
+      linear-gradient(150deg, var(--lila) 0%, var(--rosa) 100%);
+    box-shadow:0 calc(var(--u) * 1) calc(var(--u) * 3) rgba(107,63,110,.28);
+  }
+  .face.verso.cover{
+    background:
+      linear-gradient(270deg, rgba(90,49,89,.28) 0, rgba(255,255,255,.35) 2.2%, rgba(90,49,89,.14) 3.2%, rgba(90,49,89,0) 9%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,.12) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(90deg, rgba(107,63,110,.05) 0 1px, transparent 1px 3px),
+      linear-gradient(210deg, var(--lila) 0%, var(--rosa) 100%);
+    box-shadow:0 calc(var(--u) * 1) calc(var(--u) * 3) rgba(107,63,110,.28);
+  }
+  .face.cover::after{
+    content:"";
+    position:absolute;
+    inset:calc(var(--u) * 7.5);
+    border:1px solid rgba(255,255,255,.95);
+    border-radius:calc(var(--u) * 1.5);
+    outline:1px solid rgba(255,255,255,.55);
+    outline-offset:calc(var(--u) * 1.6);
+    pointer-events:none;
+  }
+  .flor{
+    width:calc(var(--u) * 24);
+    height:auto;
+    color:#fff;
+  }
+  .flor.mini{
+    width:calc(var(--u) * 15);
+    color:var(--mauve);
+    opacity:.75;
+  }
+  .foil{
+    font-family:'Fraunces', Georgia, serif;
+    background:linear-gradient(100deg, #5A3159 0%, #8E5E92 35%, #5A3159 50%, #A877A8 58%, #5A3159 80%);
+    background-size:250% 100%;
+    background-position:100% 0;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .book:not(.abierto) .foil{ animation:brillo 5.5s ease-in-out infinite; }
+  @keyframes brillo{ 0%,100%{ background-position:100% 0; } 50%{ background-position:0% 0; } }
+
+  .cover h1{
+    font-weight:600;
+    font-size:calc(var(--u) * 12);
+    line-height:1;
+    letter-spacing:-.01em;
+  }
+  .cover .nombre{
+    font-style:italic;
+    font-weight:500;
+    font-size:calc(var(--u) * 10);
+    line-height:1.1;
+  }
+  .cover .fecha{
+    font-style:italic;
+    font-size:calc(var(--u) * 4.2);
+  }
+  .cover .cierre{
+    font-family:'Caveat', cursive;
+    font-size:calc(var(--u) * 8);
+  }
+
+  /* ---------- PÁGINAS ---------- */
+  .pagina{
+    position:absolute;
+    inset:0;
+    padding:calc(var(--u) * 10) calc(var(--u) * 9) calc(var(--u) * 12);
+    display:flex;
+    flex-direction:column;
+    gap:calc(var(--u) * 3.5);
+  }
+  .pagina h2{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    font-size:calc(var(--u) * 7);
+    line-height:1.1;
+    color:var(--mauve);
+  }
+
+  /* Texto corrido: como un libro de verdad (justificado, con sangría) */
+  .flujo{ width:100%; }
+  .pagina .flujo p{
+    font-size:calc(var(--u) * 4.3);
+    line-height:1.58;
+    text-align:justify;
+    text-indent:1.4em;
+    hyphens:manual;
+    -webkit-hyphens:manual;
+  }
+  .pagina .flujo p + p{ margin-top:.2em; }
+  .pagina .flujo p.sin-sangria{ text-indent:0; }
+  .pagina .flujo p.sigue{ text-align-last:justify; }
+  .pagina .flujo p.cita{
+    margin:.75em 0;
+    padding:0 calc(var(--u) * 3);
+    text-align:center;
+    text-align-last:center;
+    text-indent:0;
+    font-family:'Fraunces', Georgia, serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:calc(var(--u) * 5);
+    line-height:1.35;
+    color:var(--mauve);
+  }
+  .pagina .flujo strong{
+    font-weight:400;
+    font-style:italic;
+    color:var(--mauve);
+  }
+  .pagina .flujo .cap{
+    float:left;
+    padding:calc(var(--u) * .5) calc(var(--u) * 1.4) 0 0;
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    font-size:calc(var(--u) * 17);
+    line-height:.76;
+    color:var(--mauve);
+  }
+
+  /* Si la última página del texto queda con pocas líneas, se centra como cierre del capítulo */
+  .pagina.corta{ justify-content:center; }
+  .pagina.corta .flujo p{ text-align:center; text-align-last:center; text-indent:0; }
+  .pagina.corta .flujo p + p{ margin-top:.8em; }
+
+  /* Páginas centradas (dedicatoria, cierre, foto, posdata) */
+  .pagina.centrada{
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+  }
+  .pagina.centrada p{
+    font-size:calc(var(--u) * 4);
+    line-height:1.55;
+  }
+  .pagina.centrada p + p{ margin-top:.8em; }
+  .pagina.centrada p.dedicatoria{
+    font-family:'Fraunces', Georgia, serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:calc(var(--u) * 6.2);
+    line-height:1.3;
+    color:var(--mauve);
+    padding:0 calc(var(--u) * 4);
+  }
+  .pagina.centrada p.firma{
+    font-family:'Caveat', cursive;
+    font-size:calc(var(--u) * 7);
+    line-height:1.1;
+    color:var(--mauve);
+    margin-top:calc(var(--u) * 2);
+  }
+
+  .num{
+    position:absolute;
+    bottom:calc(var(--u) * 5);
+    font-size:calc(var(--u) * 3.2);
+    font-style:italic;
+    opacity:.55;
+  }
+  .recto .num{ right:calc(var(--u) * 9); }
+  .verso .num{ left:calc(var(--u) * 9); }
+
+  /* Máquina de escribir: lo que falta por escribir ocupa su lugar pero no se ve */
+  .tx .r{ opacity:0; }
+  .tx .t.activo::after{
+    content:"";
+    display:inline-block;
+    width:0;
+    height:1em;
+    border-right:1.5px solid var(--mauve);
+    margin-right:-1.5px;
+    vertical-align:-.14em;
+    animation:parpadea .8s steps(1) infinite;
+  }
+  @keyframes parpadea{ 50%{ border-color:transparent; } }
+
+  .foto{
+    position:relative;
+    align-self:center;
+    width:84%;
+    padding:calc(var(--u) * 3) calc(var(--u) * 3) calc(var(--u) * 10);
+    background:#fff;
+    box-shadow:0 calc(var(--u) * 1) calc(var(--u) * 3) rgba(107,63,110,.2);
+    transform:rotate(-2deg);
+  }
+  .foto img, .foto .vacia{
+    display:block;
+    width:100%;
+    aspect-ratio:1 / 1;
+    object-fit:cover;
+  }
+  .foto .vacia{
+    display:grid;
+    place-items:center;
+    background:linear-gradient(135deg, var(--rosa-suave), var(--cielo));
+    color:var(--mauve);
+    font-style:italic;
+    font-size:calc(var(--u) * 3.6);
+  }
+  .foto figcaption{
+    position:absolute;
+    left:0; right:0;
+    bottom:calc(var(--u) * 2.6);
+    text-align:center;
+    font-family:'Caveat', cursive;
+    font-size:calc(var(--u) * 6);
+    color:var(--mauve);
+  }
+
+  /* Hoja invisible donde se mide cuánto texto cabe en cada página */
+  .medida{
+    --w:400px;
+    --u:calc(var(--w) / 100);
+    --h:calc(var(--w) * 1.42);
+    position:fixed;
+    left:-10000px;
+    top:0;
+    width:var(--w);
+    height:var(--h);
+    visibility:hidden;
+    pointer-events:none;
+  }
+
+  /* ---------- CONTROLES ---------- */
+  .controles{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:6px 16px 22px;
+  }
+  .btn{
+    width:44px;
+    height:44px;
+    display:grid;
+    place-items:center;
+    border:1px solid rgba(107,63,110,.35);
+    border-radius:50%;
+    background:rgba(255,250,246,.75);
+    color:var(--mauve);
+    cursor:pointer;
+    transition:background .2s, opacity .2s;
+  }
+  .btn:hover:not(:disabled){ background:#fff; }
+  .btn:disabled{ opacity:.3; cursor:default; }
+  .btn svg{ width:20px; height:20px; }
+  .btn:focus-visible, .face.cover:focus-visible{
+    outline:3px solid var(--mauve);
+    outline-offset:3px;
+  }
+  .pista{
+    min-width:16ch;
+    text-align:center;
+    font-style:italic;
+    font-size:16px;
+    opacity:.85;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    :root{ --dur:.01s; }
+    .stage{ animation:none; }
+    .book:not(.abierto) .foil{ animation:none; }
+    .tx .t.activo::after{ animation:none; }
+  }
+</style>
+</head>
+<body>
+
+<main class="stage" id="stage">
+  <div class="book" id="book" aria-live="polite">
+    <div class="shadow"></div>
+  </div>
+</main>
+
+<div class="controles">
+  <button class="btn" id="btnPrev" aria-label="Página anterior">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+  </button>
+  <p class="pista" id="pista">Preparando el libro…</p>
+  <button class="btn" id="btnNext" aria-label="Página siguiente">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+  </button>
+</div>
+
+<div class="medida" id="medida" aria-hidden="true">
+  <div class="pagina"><div class="flujo" id="flujo"></div></div>
+</div>
+
+<script>
+/* =====================================================================
+   ZONA PARA EDITAR: aquí cambias todo el contenido del libro.
+
+   - "cuerpo": la carta completa. Pégala tal cual. Se reparte SOLA en
+     tantas páginas como hagan falta, llenándolas como un libro de verdad.
+       · Un párrafo se separa del siguiente con una línea en blanco.
+       · Si un párrafo entero va entre **dos asteriscos**, se vuelve una
+         frase destacada (centrada, en cursiva y color).
+       · Si solo una parte va entre **asteriscos**, queda en cursiva de color.
+   - "cierre" y "posdata": páginas centradas (máximo ~100 palabras cada una).
+   - "foto": el nombre de la foto, que debe estar junto a este archivo.
+     Si no la encuentra, se ve un marco vacío.
+   - "velocidad": milisegundos por letra al escribir (5 = rápido, 25 = lento).
+   - "parrafosFinales": cuántos párrafos del final de la carta van solos en una
+     página centrada, como cierre. Con 3 son "Tú has sido una de esas coincidencias..."
+   ===================================================================== */
+const CONFIG = {
+  nombre: "Gina",
+  fecha: "13 de octubre",
+  de: "",              // si pones tu nombre, sale en la contraportada ("Con cariño, ...")
+  velocidad: 5,
+  parrafosFinales: 3,  // los últimos párrafos de la carta van juntos en una página centrada (0 = desactivar)
+
+  dedicatoria: "Para ti, en tus 21 vueltas alrededor del Sol.",
+
+  cuerpo: `
+Dicen que para llegar a querer a alguien hace falta tiempo. Que los vínculos se construyen poco a poco, que el cariño necesita días, meses, años y un sinfín de momentos compartidos para echar raíces. Y quizá tengan razón. Quizá el tiempo sea una de las formas más bonitas de conocer a alguien.
+
+Sin embargo, me gusta pensar que el universo, de vez en cuando, hace sus propias excepciones.
+
+Desde pequeña me ha fascinado su inmensidad. ¿No te parece extraordinario pensar en todo lo que existe más allá de lo que nuestros ojos pueden ver? Miles de millones de galaxias, incontables estrellas, mundos que ni siquiera imaginamos y posibilidades que probablemente jamás llegaremos a comprender. Un espacio tan inmenso que resulta difícil concebir sus límites y en el que, de alguna manera, también existe un lugar para nosotros.
+
+A veces me detengo a pensar en ello y me parece increíble que podamos coincidir.
+
+Porque, si lo piensas, las posibilidades de que nuestras vidas se cruzaran eran tantas y tan distintas… Pudimos haber nacido en otros lugares, en otras épocas, haber tomado decisiones diferentes o haber seguido caminos que jamás nos llevaran a encontrarnos. Bastaba con que una pequeña cosa hubiera sido distinta para que esta historia ni siquiera existiera.
+
+Y, aun así, aquí estamos.
+
+Entre tantas personas, tantos caminos y tantas posibilidades, terminé conociéndote a ti.
+
+Y lo más gracioso es que nuestra historia no comenzó precisamente como una de esas coincidencias bonitas que cuentan en los libros. JAJAJA. Si algo recuerdo, es que solías caerme bastante fatal. Tenía una versión de ti que, con el tiempo, descubrí que estaba lejos de hacerte justicia. Me había formado una idea equivocada, una imagen incompleta de alguien a quien todavía no conocía de verdad.
+
+Supongo que a veces nos apresuramos a creer que entendemos a las personas cuando apenas hemos visto una pequeña parte de ellas.
+
+Pero entonces tuve la oportunidad de conocerte un poquito más y descubrí que detrás de aquella idea que tenía de ti había alguien completamente diferente. Alguien con una esencia que merece la pena conocer, de esas personas que, sin proponérselo necesariamente, consiguen dejar algo bonito en quienes tienen la oportunidad de acercarse a ellas.
+
+Y qué curioso, ¿no? Que alguien que en un principio no te agradaba demasiado termine convirtiéndose en una persona a la que le tienes tanto cariño.
+
+La vida tiene formas bastante extrañas de sorprendernos.
+
+Y tú has sido una de esas sorpresas.
+
+Porque, aunque todavía me quede muchísimo por conocer de ti, hay cosas que he podido descubrir y que me gustaría que nunca olvidaras.
+
+Eres una persona sensible, amable y tierna. Tienes una forma muy tuya de preocuparte por los demás, de procurar que estén bien y de ofrecerles un poquito de esa calidez que llevas contigo. A veces parece que encuentras la manera de pensar en todo el mundo, incluso cuando tú también necesitas que alguien se detenga a pensar en ti.
+
+Y quisiera que recordaras algo: **tú también mereces recibir todo ese cariño que tantas veces intentas dar.**
+
+Mereces que te escuchen cuando no encuentres las palabras para explicar lo que sientes. Que te abracen cuando el mundo pese demasiado. Que te permitan descansar sin hacerte sentir culpable por no poder con todo. Mereces tener días en los que no tengas que demostrar lo fuerte que eres, en los que puedas simplemente existir, respirar y permitirte sentir, sin exigirte estar bien para que los demás lo estén.
+
+Porque ser fuerte no significa que nada te duela. Ser fuerte también es continuar después de los días difíciles, aprender a tu propio ritmo y seguir intentando, incluso cuando las cosas no salen como esperabas.
+
+Y, por lo que he podido conocer de ti, sé que llevas contigo una fortaleza que quizá ni siquiera reconoces del todo.
+
+No sé todas las cosas que has tenido que vivir, ni pretendo imaginar que puedo comprender por completo cada una de ellas. Pero sí sé que tu historia, con todo lo que ha tenido de bonito y de difícil, forma parte de la persona que eres hoy. Y me parece admirable que, a pesar de lo que hayas atravesado, sigas teniendo esa sensibilidad, esa ternura y esas ganas de procurar que otras personas estén bien.
+
+Ojalá nunca sientas que tienes que endurecer tu corazón para protegerte del mundo. Ojalá encuentres personas que sepan cuidar esa parte tan bonita de ti, que comprendan que incluso quienes parecen poder con todo necesitan un lugar seguro donde descansar.
+
+Y ojalá tú también aprendas a darte ese lugar.
+
+No puedo prometerte que la vida será siempre amable contigo. Me gustaría poder hacerlo, de verdad, pero sé que la vida no funciona así. Habrá días en los que las cosas no salgan como quieres, momentos en los que dudes de ti misma y etapas en las que avanzar parezca mucho más difícil de lo que imaginabas.
+
+Pero deseo que, cuando lleguen esos días, recuerdes que no tienes que resolverlo todo de inmediato. Que equivocarte no te hace menos capaz, que detenerte no significa retroceder y que tener un día malo no borra todo lo bueno que hay en ti.
+
+No tienes que convertirte en una versión perfecta de ti misma para merecer cosas bonitas.
+
+**Ya mereces cosas bonitas mientras aprendes, mientras cambias, mientras te equivocas y mientras descubres quién quieres ser.**
+
+Y si alguna vez llegas a olvidarlo, espero que la vida encuentre la manera de recordártelo.
+
+Hoy cumples 21 años.
+
+Veintiuna vueltas alrededor del Sol. Veintiún años habitando este pequeño rincón del universo, acumulando recuerdos, conociendo personas, aprendiendo lecciones y convirtiéndote, poco a poco, en alguien que todavía tiene muchísimas páginas por escribir.
+
+Me parece bonito pensar en tu vida como una historia que sigue desarrollándose. Una historia cuyo final nadie conoce, ni siquiera tú, y que todavía guarda lugares por descubrir, personas por conocer, sueños por cumplir y momentos que algún día recordarás con una sonrisa.
+
+Espero que esta nueva etapa te regale muchos de esos momentos.
+
+Que encuentres motivos para reír incluso en los días ordinarios. Que conozcas lugares que te hagan sentir pequeña ante la inmensidad del mundo, pero inmensamente feliz de estar en él. Que puedas cumplir esos sueños que guardas con tanta ilusión y que, si alguno cambia de forma con el tiempo, tengas la libertad de perseguir uno nuevo.
+
+Deseo que lleguen a tu vida personas que no te hagan dudar constantemente del cariño que sienten por ti. Personas que te elijan con sinceridad, que celebren tus logros sin compararte con nadie y que permanezcan a tu lado no solo cuando todo sea fácil, sino también cuando necesites un poco más de paciencia y comprensión.
+
+Deseo que tengas la oportunidad de descubrir muchas versiones de ti misma. Que algunas te sorprendan, que otras te enseñen y que todas te acerquen a una vida en la que puedas sentirte cada vez más a gusto contigo.
+
+Y, sobre todo, deseo que seas feliz. No únicamente de esa manera extraordinaria que imaginamos cuando pensamos en los grandes acontecimientos, sino también en las pequeñas cosas: en una conversación que se alarga más de lo previsto, en una canción que parece entenderte, en una tarde tranquila, en un abrazo inesperado o en ese instante en el que te das cuenta de que, por fin, estás teniendo una buena época.
+
+Porque la felicidad también vive ahí, en esos pequeños instantes que parecen insignificantes hasta que los recordamos y descubrimos cuánto significaban.
+
+Y ahora, después de escribirte todo esto, quizá te preguntes por qué he decidido dedicarte tantas palabras si, al fin y al cabo, nos conocemos desde hace relativamente poco.
+
+La respuesta es sencilla, aunque no sé si existe una manera perfecta de explicarla.
+
+**Porque el tiempo que llevamos conociéndonos no cambia el cariño que he llegado a sentir por ti.**
+
+No pretendo decir que ya conozco todas tus facetas, que comprendo cada pensamiento que pasa por tu cabeza o que sé todo lo que todavía te queda por mostrar. Sería absurdo, porque aún nos quedan muchas conversaciones, muchas experiencias y muchas oportunidades para descubrir quiénes somos.
+
+Pero no necesito conocer cada capítulo de tu historia para alegrarme de haber tenido la oportunidad de leer sus primeras páginas.
+
+Y eso es precisamente lo que quiero que sepas: eres importante para mí. Te quiero mucho y me alegra que, entre todas las posibilidades que pudieron existir, la vida nos haya permitido coincidir.
+
+Quizá para algunas personas el cariño necesite muchísimo tiempo para aparecer. Quizá para otras surja de maneras inesperadas, sin pedir permiso y sin seguir un calendario. No creo que exista una fórmula exacta para determinar cuándo alguien comienza a ocupar un lugar especial en nuestra vida.
+
+A veces, simplemente, ocurre.
+
+Y qué bonito que ocurra con personas como tú.
+
+Así que hoy, en tu cumpleaños, no quiero desearte únicamente un año más de vida. Quiero desearte una vida en la que cada año encuentres más razones para querer estar en ella; una vida en la que puedas mirar hacia atrás sin que tus recuerdos dolorosos definan todo lo que eres, y mirar hacia delante con la ilusión de quien sabe que todavía le esperan cosas maravillosas.
+
+Que tus próximos 21 años estén llenos de experiencias que te hagan crecer, de personas que te hagan bien, de sueños que te emocionen y de una tranquilidad que no tengas que sacrificar para demostrar tu valor.
+
+Que nunca te falten estrellas que admirar, lugares que descubrir, historias que contar y motivos para seguir sorprendiéndote con el mundo.
+
+Y que, cuando sientas que todo es demasiado grande, demasiado difícil o demasiado incierto, recuerdes que no necesitas tener todas las respuestas para seguir avanzando. A veces basta con dar el siguiente paso y confiar en que, poco a poco, encontrarás tu camino.
+
+Gracias por dejarme conocerte un poquito más. Gracias por ser tú, con tu sensibilidad, tus virtudes, tus imperfecciones y todas esas pequeñas cosas que todavía me quedan por descubrir.
+
+Me alegra que nuestras historias se hayan cruzado. Y, aunque no sé qué caminos nos esperan de ahora en adelante, espero que la vida nos permita compartir muchos más momentos, recuerdos y risas de esas que terminan convirtiéndose en anécdotas que contamos una y otra vez.
+
+Porque, de todas las cosas extraordinarias que podemos encontrar cuando miramos hacia el universo, hay algo que me parece especialmente hermoso: la posibilidad de que dos personas coincidan y, a partir de ese encuentro, el mundo de ambas se vuelva un poquito diferente.
+
+Tú has sido una de esas coincidencias para mí.
+
+Y si existen infinitos universos, infinitas galaxias e infinitas posibilidades, me gusta imaginar que, entre tanta inmensidad, hubo una pequeña oportunidad para que nuestros caminos se encontraran.
+
+Y la aprovechamos.
+`,
+
+  cierre: {
+    titulo: "Felices 21 años ♡",
+    texto: `
+Que la vida sea amable contigo, que el universo te sorprenda y que nunca te falten motivos para descubrir lo bonito que todavía tiene para ofrecerte.
+
+Y, si algún día vuelves a leer estas palabras, espero que recuerdes algo: en este pequeño rincón del universo, en este momento tan particular de nuestras vidas, hubo alguien que se alegró muchísimo de haberte conocido y que quiso recordarte, en el día de tu cumpleaños, lo valiosa que eres.
+`,
+    firma: "Con muchísimo cariño ♡"
+  },
+
+  foto: {
+    imagen: "WhatsApp Image 2026-10-10 at 20.19.58.jpeg",
+    pie: "un recuerdo"
+  },
+
+  posdata: {
+    titulo: "POSDATA",
+    texto: `
+Siempre dicen que debes dar lo mejor de ti y compartir aquello que mejor sabes hacer. Así que aquí estoy, jajajaja, haciendo precisamente eso.
+
+Al fin y al cabo, esta es mi área, y no podía dejar pasar la oportunidad de darte algo hecho por mí. Así que, técnicamente, esto es culpa de mi profesión JAJAJA.
+
+Espero que te guste mucho y que, cuando lo leas, puedas sentir aunque sea un poquito del cariño con el que lo hice.
+
+Porque, si iba a regalarte algo, quería que fuera algo que tuviera una parte de mí.
+`
+  }
+};
+
+/* =====================================================================
+   A partir de aquí no hace falta tocar nada.
+   ===================================================================== */
+(function () {
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+  const sinMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const mq = window.matchMedia('(max-width: 760px)');
+  const movil = () => mq.matches;
+
+  document.title = `Feliz cumpleaños, ${CONFIG.nombre}`;
+
+  const flor = (extra) => `
+    <svg class="flor ${extra || ''}" viewBox="-50 -50 100 100" aria-hidden="true">
+      <g fill="currentColor" fill-opacity=".18" stroke="currentColor" stroke-width="1.1">
+        ${[0,45,90,135,180,225,270,315].map(a => `<ellipse cx="0" cy="-23" rx="8" ry="17" transform="rotate(${a})"/>`).join('')}
+        <circle r="6.5"/>
+      </g>
+    </svg>`;
+
+  const portada = `
+    <div class="face recto cover" role="button" tabindex="0" aria-label="Abrir el libro" id="portada">
+      ${flor()}
+      <h1 class="foil">Feliz<br>cumpleaños</h1>
+      <p class="nombre foil">${esc(CONFIG.nombre)}</p>
+      <p class="fecha">${esc(CONFIG.fecha)}</p>
+    </div>`;
+
+  const contraportada = `
+    <div class="face verso cover">
+      ${flor()}
+      <p class="cierre">${CONFIG.de ? 'Con cariño, ' + esc(CONFIG.de) : 'Con cariño'}</p>
+    </div>`;
+
+  /* ---------- Espera a que carguen las letras, para medir bien las páginas ---------- */
+  async function esperarFuentes() {
+    try {
+      if (!document.fonts) return;
+      const lista = ['400 16px Newsreader', 'italic 400 16px Newsreader', '600 16px Fraunces', 'italic 500 16px Fraunces', '500 16px Caveat'];
+      const carga = Promise.all(lista.map(f => document.fonts.load(f)));
+      await Promise.race([carga, new Promise(r => setTimeout(r, 3500))]);
+      await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 500))]);
+    } catch (e) { /* si algo falla, seguimos con las letras de respaldo */ }
+  }
+
+  esperarFuentes().then(iniciar);
+
+  function iniciar() {
+    /* ---------- 1. Texto -> bloques de palabras ---------- */
+    function tokenizar(par) {
+      const toks = [];
+      let negrita = false;
+      par.split(/(\*\*)/).forEach(parte => {
+        if (parte === '**') { negrita = !negrita; return; }
+        parte.split(/\s+/).filter(Boolean).forEach(w => toks.push({ w, b: negrita }));
+      });
+      return toks;
+    }
+
+    function bloques(texto) {
+      return texto.trim().split(/\n\s*\n/).map(par => {
+        par = par.trim();
+        const esCita = /^\*\*[^*]+\*\*$/.test(par);
+        return { tipo: esCita ? 'cita' : 'p', tokens: tokenizar(par), cont: false, cap: false };
+      }).filter(b => b.tokens.length);
+    }
+
+    function renderTokens(tokens, tipo, cap) {
+      let out = '', abierto = false;
+      tokens.forEach((t, i) => {
+        let w = esc(t.w);
+        if (cap && i === 0) w = `<span class="cap">${esc(t.w[0])}</span>${esc(t.w.slice(1))}`;
+        if (tipo !== 'cita') {
+          if (t.b && !abierto) { out += '<strong>'; abierto = true; }
+          if (!t.b && abierto) { out += '</strong>'; abierto = false; }
+        }
+        out += (i ? ' ' : '') + w;
+      });
+      if (abierto) out += '</strong>';
+      return out;
+    }
+
+    function renderPieza(pz) {
+      const cls = ['tx'];
+      if (pz.tipo === 'cita') cls.push('cita');
+      if (pz.cont || pz.cap) cls.push('sin-sangria');
+      if (pz.sigue) cls.push('sigue');
+      return `<p class="${cls.join(' ')}">${renderTokens(pz.tokens, pz.tipo, pz.cap)}</p>`;
+    }
+
+    /* ---------- 2. Reparto automático en páginas (se mide en una hoja invisible) ---------- */
+    const medida = document.getElementById('medida');
+    const flujo = document.getElementById('flujo');
+    const hoja = medida.querySelector('.pagina');
+    const cs = getComputedStyle(hoja);
+    const u = hoja.clientWidth / 100;
+    const maxH = hoja.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - u * 3;
+
+    const cabe = piezas => {
+      flujo.innerHTML = piezas.map(renderPieza).join('');
+      return flujo.offsetHeight <= maxH;
+    };
+
+    function paginar(lista) {
+      const paginas = [];
+      let cur = [];
+      const cola = lista.slice();
+      let i = 0;
+      while (i < cola.length) {
+        const b = cola[i];
+        if (cabe(cur.concat([b]))) { cur.push(b); i++; continue; }
+        if (b.tipo === 'cita' && cur.length) { paginas.push(cur); cur = []; continue; }
+
+        let lo = 0, hi = b.tokens.length - 1;
+        while (lo < hi) {
+          const mid = Math.ceil((lo + hi) / 2);
+          if (cabe(cur.concat([Object.assign({}, b, { tokens: b.tokens.slice(0, mid) })]))) lo = mid; else hi = mid - 1;
+        }
+        if (lo === 0) {
+          if (cur.length) { paginas.push(cur); cur = []; continue; }
+          lo = 1;
+        }
+        /* evita dejar una o dos palabras sueltas en la página siguiente */
+        if (b.tokens.length - lo < 3 && lo > 6) lo = b.tokens.length - 3;
+
+        cur.push(Object.assign({}, b, { tokens: b.tokens.slice(0, lo), sigue: true }));
+        paginas.push(cur);
+        cur = [];
+        cola[i] = Object.assign({}, b, { tokens: b.tokens.slice(lo), cont: true, cap: false });
+      }
+      if (cur.length) paginas.push(cur);
+      return paginas;
+    }
+
+    const lista = bloques(CONFIG.cuerpo);
+    if (lista.length && lista[0].tipo === 'p') lista[0].cap = true;
+    /* Los últimos párrafos van juntos en una página centrada, como cierre de la carta */
+    const nFinal = Math.max(0, Math.min(CONFIG.parrafosFinales || 0, lista.length - 1));
+    let finales = nFinal ? lista.slice(-nFinal) : [];
+    let principal = nFinal ? lista.slice(0, -nFinal) : lista;
+    if (finales.length && !cabe(finales)) { principal = lista; finales = []; }
+    const paginasCuerpo = paginar(principal);
+    const hayFinal = finales.length > 0;
+    if (hayFinal) paginasCuerpo.push(finales);
+    let ultimaCorta = false;
+    if (!hayFinal && paginasCuerpo.length) {
+      flujo.innerHTML = paginasCuerpo[paginasCuerpo.length - 1].map(renderPieza).join('');
+      ultimaCorta = flujo.offsetHeight < maxH * 0.5;
+    }
+    flujo.innerHTML = '';
+
+    /* ---------- 3. Orden final del libro ---------- */
+    const datos = [{ tipo: 'dedic' }];
+    paginasCuerpo.forEach((piezas, i) => datos.push({ tipo: 'cuerpo', piezas, corta: (hayFinal || ultimaCorta) && i === paginasCuerpo.length - 1 }));
+    if ((datos.length + 3) % 2 === 1) datos.push({ tipo: 'blanca' });
+    datos.push({ tipo: 'cierre' }, { tipo: 'foto' }, { tipo: 'posdata' });
+
+    const parrafos = t => String(t).replace(/\*\*/g, '').trim().split(/\n\s*\n/).map(x => `<p class="tx">${esc(x.trim())}</p>`).join('');
+
+    function htmlPagina(pg, k) {
+      const lado = k % 2 === 0 ? 'verso' : 'recto';
+      let interior = '', num = '';
+      if (pg.tipo === 'dedic') {
+        interior = `<div class="pagina centrada">${flor('mini')}<p class="tx dedicatoria">${esc(CONFIG.dedicatoria)}</p></div>`;
+      } else if (pg.tipo === 'cuerpo') {
+        interior = `<div class="pagina${pg.corta ? ' corta' : ''}"><div class="flujo">${pg.piezas.map(renderPieza).join('')}</div></div>`;
+        num = pg.corta ? '' : `<span class="num">${k}</span>`;
+      } else if (pg.tipo === 'cierre') {
+        const c = CONFIG.cierre;
+        interior = `<div class="pagina centrada"><h2 class="tx">${esc(c.titulo)}</h2>${parrafos(c.texto)}${c.firma ? `<p class="tx firma">${esc(c.firma)}</p>` : ''}</div>`;
+      } else if (pg.tipo === 'foto') {
+        const fo = CONFIG.foto;
+        const img = fo.imagen
+          ? `<img src="${esc(encodeURI(fo.imagen))}" alt="${esc(fo.pie || '')}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'vacia',textContent:'tu foto aquí'}))">`
+          : `<div class="vacia">tu foto aquí</div>`;
+        interior = `<div class="pagina centrada"><figure class="foto">${img}${fo.pie ? `<figcaption class="tx">${esc(fo.pie)}</figcaption>` : ''}</figure></div>`;
+      } else if (pg.tipo === 'posdata') {
+        const p = CONFIG.posdata;
+        interior = `<div class="pagina centrada"><h2 class="tx">${esc(p.titulo)}</h2>${parrafos(p.texto)}</div>`;
+      } else {
+        interior = `<div class="pagina"></div>`;
+      }
+      return `<div class="face ${lado}" data-k="${k}">${interior}${num}</div>`;
+    }
+
+    const L = datos.length / 2 + 1;
+    const book = document.getElementById('book');
+    const stage = document.getElementById('stage');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    const pista = document.getElementById('pista');
+
+    const leaves = [];
+    for (let i = 0; i < L; i++) {
+      const front = i === 0 ? portada : htmlPagina(datos[2 * i - 1], 2 * i - 1);
+      const back = i === L - 1 ? contraportada : htmlPagina(datos[2 * i], 2 * i);
+      const lf = document.createElement('div');
+      lf.className = 'leaf';
+      lf.style.setProperty('--i', i);
+      lf.style.zIndex = L - i;
+      lf.innerHTML = front + back;
+      book.appendChild(lf);
+      leaves.push(lf);
+    }
+
+    /* ---------- 4. Efecto máquina de escribir ---------- */
+    const unidades = {};
+    book.querySelectorAll('.face[data-k]').forEach(face => {
+      const k = Number(face.dataset.k);
+      const tw = document.createTreeWalker(face, NodeFilter.SHOW_TEXT);
+      const nodos = [];
+      while (tw.nextNode()) {
+        const n = tw.currentNode;
+        if (n.nodeValue.length && n.parentElement && n.parentElement.closest('.tx')) nodos.push(n);
+      }
+      unidades[k] = nodos.map(n => {
+        const full = n.nodeValue;
+        const t = document.createElement('span'); t.className = 't';
+        const r = document.createElement('span'); r.className = 'r'; r.textContent = full;
+        const tx = n.parentElement.closest('.tx');
+        n.replaceWith(t, r);
+        return { t, r, full, tx };
+      });
+    });
+
+    const estado = {};
+    const hecho = new Set();
+    let visiblesAhora = new Set();
+
+    function completarPagina(k) {
+      const st = estado[k];
+      if (st) clearTimeout(st.timer);
+      delete estado[k];
+      (unidades[k] || []).forEach(un => {
+        un.t.classList.remove('activo');
+        un.t.textContent = un.full;
+        un.r.textContent = '';
+      });
+      hecho.add(k);
+    }
+
+    function escribirPagina(k) {
+      const us = unidades[k];
+      if (!us || !us.length || hecho.has(k) || estado[k]) return;
+      if (sinMovimiento) { completarPagina(k); return; }
+      const st = estado[k] = { ui: 0, ci: 0, timer: null };
+      const paso = () => {
+        const un = us[st.ui];
+        if (!un) { delete estado[k]; hecho.add(k); return; }
+        if (st.ci === 0) un.t.classList.add('activo');
+        if (st.ci >= un.full.length) {
+          un.t.classList.remove('activo');
+          st.ui++; st.ci = 0;
+          const sig = us[st.ui];
+          st.timer = setTimeout(paso, sig && sig.tx !== un.tx ? 260 : 0);
+          return;
+        }
+        const c = un.full[st.ci];
+        st.ci++;
+        un.t.textContent = un.full.slice(0, st.ci);
+        un.r.textContent = un.full.slice(st.ci);
+        let espera = CONFIG.velocidad + Math.random() * CONFIG.velocidad * 0.6;
+        if (c === '.' || c === '?' || c === '!' || c === '…') espera += 70;
+        else if (c === ',' || c === ';' || c === ':') espera += 30;
+        st.timer = setTimeout(paso, espera);
+      };
+      paso();
+    }
+
+    /* ---------- 5. Estado y páginas ---------- */
+    let f = 0;          // cuántas hojas ya están volteadas
+    let side = 'r';     // en celular: qué página se ve ('r' derecha, 'l' izquierda)
+
+    function render() {
+      const m = movil();
+      if (m) {
+        if (f === 0) side = 'r';
+        if (f === L) side = 'l';
+      }
+
+      leaves.forEach((lf, i) => {
+        const flipped = i < f;
+        const was = lf.classList.contains('flipped');
+        const zFinal = flipped ? i + 1 : L - i;
+        lf.classList.toggle('flipped', flipped);
+        if (flipped !== was) {
+          lf._busy = true;
+          lf.style.zIndex = L + 10;
+          clearTimeout(lf._t);
+          lf._t = setTimeout(() => { lf._busy = false; lf.style.zIndex = zFinal; }, 1200);
+        } else if (!lf._busy) {
+          lf.style.zIndex = zFinal;
+        }
+      });
+
+      const vl = f > 0 && (!m || side === 'l');
+      const vr = f < L && (!m || side === 'r');
+      const sl = vl ? -1 : 0;
+      const sw = (vl ? 1 : 0) + (vr ? 1 : 0);
+      const k = 0.5 - (sl + sw / 2);
+      book.style.setProperty('--sl', sl);
+      book.style.setProperty('--sw', sw);
+      book.style.setProperty('--k', k);
+
+      book.classList.toggle('abierto', f > 0);
+      btnPrev.disabled = f === 0;
+      btnNext.disabled = f === L;
+
+      if (f === 0) pista.textContent = 'Toca el libro para abrirlo';
+      else if (f === L) pista.textContent = 'Fin. Vuelve atrás para releer';
+      else pista.textContent = 'Toca o desliza para pasar la página';
+
+      /* Qué páginas quedan a la vista: esas se escriben; las que se dejan atrás se completan al instante */
+      const visibles = [];
+      if (vl && f - 1 <= L - 2) visibles.push(2 * (f - 1));
+      if (vr && f >= 1) visibles.push(2 * f - 1);
+      visiblesAhora = new Set(visibles);
+      Object.keys(estado).map(Number).forEach(kk => { if (!visiblesAhora.has(kk)) completarPagina(kk); });
+      visibles.forEach(kk => setTimeout(() => { if (visiblesAhora.has(kk)) escribirPagina(kk); }, 750));
+    }
+
+    function next() {
+      if (!movil()) {
+        if (f < L) { f++; render(); }
+        return;
+      }
+      if (side === 'r' && f < L) { f++; side = 'l'; }
+      else if (side === 'l' && f < L) { side = 'r'; }
+      else return;
+      render();
+    }
+
+    function prev() {
+      if (!movil()) {
+        if (f > 0) { f--; render(); }
+        return;
+      }
+      if (side === 'r' && f > 0) { side = 'l'; }
+      else if (side === 'l' && f > 0) { f--; side = 'r'; }
+      else return;
+      render();
+    }
+
+    /* ---------- 6. Interacciones ---------- */
+    let swiped = false;
+    book.addEventListener('click', e => {
+      if (swiped) { swiped = false; return; }
+      if (movil()) { next(); return; }
+      const r = book.getBoundingClientRect();
+      if (e.clientX >= r.left) next(); else prev();
+    });
+
+    btnNext.addEventListener('click', next);
+    btnPrev.addEventListener('click', prev);
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') next();
+      else if (e.key === 'ArrowLeft') prev();
+    });
+    document.getElementById('portada').addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); next(); }
+    });
+
+    let sx = null, sy = null;
+    stage.addEventListener('touchstart', e => {
+      sx = e.touches[0].clientX; sy = e.touches[0].clientY; swiped = false;
+    }, { passive: true });
+    stage.addEventListener('touchend', e => {
+      if (sx === null) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - sx, dy = t.clientY - sy;
+      sx = null;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+        swiped = true;
+        if (dx < 0) next(); else prev();
+      }
+    }, { passive: true });
+
+    mq.addEventListener('change', render);
+    render();
+  }
+})();
+</script>
+</body>
+</html>
